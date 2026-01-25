@@ -1,6 +1,6 @@
-mod day2;
+mod day3;
 
 fn main() -> Result<(), std::num::ParseIntError> {
-    day2::run()?;
+    day3::run()?;
     Ok(())
 }

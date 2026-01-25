@@ -10,7 +10,6 @@ impl Detector {
         let end_id: i64 = range[1].parse()?;
 
         for id in start_id..=end_id {
-            println!("Checking ID: {}", id);
             if Detector::is_bad_id(id) {
                 self.sum_bad_ids += id;
             }
@@ -24,11 +23,23 @@ impl Detector {
         let len = str.len();
 
         for i in 1..=len {
-            let block = str[i - 1..i].chars().next().unwrap();
-            println!("Block: {}", block);
+            let chunked = Detector::split_string(&str, i as u32);
+            let first_chunk = chunked[0];
+
+            if chunked.len() > 1 && chunked.iter().all(|&c| c == first_chunk) {
+                println!("Bad ID found: {}", id);
+                return true;
+            }
         }
 
-        return true;
+        false
+    }
+
+    fn split_string(s: &str, chunk: u32) -> Vec<&str> {
+        s.as_bytes()
+            .chunks(chunk as usize)
+            .map(|c| std::str::from_utf8(c).unwrap())
+            .collect()
     }
 }
 
@@ -47,5 +58,5 @@ pub fn run() -> Result<(), std::num::ParseIntError> {
 }
 
 fn read_file() -> String {
-    return fs::read_to_string("./data_day2.txt").expect("Failed to read file");
+    fs::read_to_string("./data_day2.txt").expect("Failed to read file")
 }
